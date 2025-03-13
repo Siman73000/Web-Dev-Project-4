@@ -9,50 +9,43 @@ function createListItem(text, checked = false, iconSrc = null) {
   const li = document.createElement("li");
   li.classList.add("list-item");
 
-  // Create a clickable box element that acts as a toggle.
   const box = document.createElement("div");
   box.classList.add("clickable-box");
   if (checked) {
     box.classList.add("active");
   }
 
-  // Create an SVG icon for checked state.
   const svgIcon = document.createElement("img");
-  svgIcon.src = iconSrc || "assets/checked.svg"; // Load from storage or default
+  svgIcon.src = iconSrc || "assets/checked.svg";
   svgIcon.alt = "Checked";
   svgIcon.classList.add("svg-icon");
-  svgIcon.style.display = checked ? "block" : "none"; // Show only if checked
+  svgIcon.style.display = checked ? "block" : "none";
 
-  box.appendChild(svgIcon); // Append SVG inside the box
+  box.appendChild(svgIcon);
 
-  // Create a span for the task text.
   const span = document.createElement("span");
   span.textContent = text;
   if (checked) {
     span.classList.add("completed");
   }
 
-  // Create the delete icon (using delete.svg).
   const deleteIcon = document.createElement("img");
-  deleteIcon.src = "assets/delete.svg"; // Correct path to delete icon
+  deleteIcon.src = "assets/delete.svg";
   deleteIcon.alt = "Delete";
   deleteIcon.classList.add("delete-icon");
 
-  // Toggle active state when the box is clicked.
   box.addEventListener("click", () => {
     box.classList.toggle("active");
     const isActive = box.classList.contains("active");
     span.classList.toggle("completed", isActive);
-    svgIcon.style.display = isActive ? "block" : "none"; // Show SVG when active
+    svgIcon.style.display = isActive ? "block" : "none";
 
-    // Update itemStorage
     itemStorage = itemStorage.map(item =>
       item.text === text ? { text, checked: isActive, iconSrc: svgIcon.src } : item
     );
     localStorage.setItem("itemStorage", JSON.stringify(itemStorage));
   });
 
-  // When the delete icon is clicked, remove the item.
   deleteIcon.addEventListener("click", (e) => {
     e.stopPropagation();
     li.remove();
@@ -60,7 +53,6 @@ function createListItem(text, checked = false, iconSrc = null) {
     localStorage.setItem("itemStorage", JSON.stringify(itemStorage));
   });
 
-  // Append elements in the correct order: [Checkbox] [Text] [Delete Button]
   li.appendChild(box);
   li.appendChild(span);
   li.appendChild(deleteIcon);
@@ -70,20 +62,15 @@ function createListItem(text, checked = false, iconSrc = null) {
 
 
 input.addEventListener("input", () => {
-  input.style.height = "auto"; // Reset height
-  input.style.height = input.scrollHeight + "px"; // Adjust based on content
+  input.style.height = "auto";
+  input.style.height = input.scrollHeight + "px";
 });
 
-
-
-
-// Render stored items on load.
 itemStorage.forEach(({ text, checked }) => {
   const li = createListItem(text, checked);
   list.appendChild(li);
 });
 
-// Add new item.
 addButton.addEventListener("click", (e) => {
   e.preventDefault();
   const text = input.value.trim();
@@ -95,7 +82,6 @@ addButton.addEventListener("click", (e) => {
   input.value = "";
 });
 
-// Delete selected items using the "Delete" button (if needed).
 deleteButton.addEventListener("click", (e) => {
   e.preventDefault();
   const checkedItems = [...list.querySelectorAll(".clickable-box.active")];
@@ -116,7 +102,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 input.addEventListener("keydown", (e) => {
   if (e.key === "Enter") {
-    e.preventDefault(); // Prevent default form submission
-    addButton.click();  // Trigger the Add button's click event
+    e.preventDefault();
+    addButton.click();
   }
 });
